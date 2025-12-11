@@ -7,7 +7,6 @@ An official digital platform developed to streamline the reporting and resolutio
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 [![Firebase](https://img.shields.io/badge/Firebase-v10-orange)]()
 [![React](https://img.shields.io/badge/React-18-blue)]()
-[![License](https://img.shields.io/badge/license-MIT-green)]()
 
 ---
 
@@ -23,7 +22,6 @@ An official digital platform developed to streamline the reporting and resolutio
 - [Available Scripts](#available-scripts)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -99,8 +97,8 @@ Samadhan Portal envisions a responsive, transparent, and technology-driven gover
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/samadhan-portal.git
-   cd samadhan-portal
+   git clone https://github.com/adityapaswan568/Samadhan-WebPortal.git
+   cd samadhan-Webportal
    ```
 
 2. **Install dependencies**
@@ -198,11 +196,6 @@ samadhan-portal/
 - Delete their own complaints
 - View personal dashboard
 
-### 2. Worker
-- View assigned tasks/issues
-- Update issue status
-- Upload proof of completion
-- Monitor task progress
 
 ### 3. Admin
 - View all issues in the system
@@ -405,14 +398,6 @@ Contributions are welcome! Please follow these steps:
 - Delete operation has no undo/confirmation
 - Mobile optimization needs further testing
 
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 📧 Contact & Support
 
 For questions, issues, or suggestions:
@@ -444,3 +429,8 @@ For questions, issues, or suggestions:
 **Built with ❤️ for better civic governance**
 
 *Samadhan Portal - Empowering Citizens, Enabling Transparency*
+
+### 👨‍🔧Author Details
+
+**Aditya Paswan** - [@adityapaswan568](https://github.com/adityapaswan568)
+
