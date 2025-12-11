@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Helper function to get user role
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isSignedIn() && getUserRole() == 'admin';
+    }
+    
+    // Helper function to check if user is worker
+    function isWorker() {
+      return isSignedIn() && getUserRole() == 'worker';
+    }
+    
+    // Helper function to check if user is citizen
+    function isCitizen() {
+      return isSignedIn() && getUserRole() == 'citizen';
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      
+      // Allow user creation with matching auth UID
+      // Role can be 'citizen', 'admin', or 'worker' during registration
+      allow create: if isSignedIn() && 
+                      request.auth.uid == userId &&
+                      request.resource.data.uid == userId &&
+                      request.resource.data.role in ['citizen', 'admin', 'worker'] &&
+                      request.resource.data.keys().hasAll(['uid', 'fullName', 'email', 'role', 'createdAt']);
+      
+      // Users can update their own profile (except role)
+      allow update: if isSignedIn() && 
+                      request.auth.uid == userId &&
+                      request.resource.data.role == resource.data.role; // Role cannot be changed by user
+      
+      // Admins can read all users
+      allow read: if isAdmin();
+      
+      // Admins can update user roles and other fields
+      allow update: if isAdmin();
+    }
+    
+    // Issues/Complaints collection
+    match /issues/{issueId} {
+      // Anyone authenticated can read all issues (for transparency)
+      allow read: if isSignedIn();
+      
+      // Citizens can create issues with their own userId
+      allow create: if isSignedIn() &&
+                      request.resource.data.userId == request.auth.uid &&
+                      request.resource.data.userEmail == request.auth.token.email &&
+                      request.resource.data.status == 'Pending' &&
+                      request.resource.data.assignedTo == null &&
+                      request.resource.data.keys().hasAll(['userId', 'userEmail', 'title', 'description', 'category', 'address', 'imageUrl', 'status', 'createdAt']);
+      
+      // Users can delete their own issues at ANY status
+      // Citizens should be able to remove unwanted/mistaken posts
+      allow delete: if isSignedIn() && 
+                      resource.data.userId == request.auth.uid;
+      
+      // Workers can update issues assigned to them (status and comments)
+      allow update: if isSignedIn() &&
+                      (isWorker() || isAdmin()) &&
+                      resource.data.assignedTo == request.auth.uid;
+      
+      // Admins can update any issue (for assignment and status changes)
+      allow update: if isAdmin();
+      
+      // Admins can delete any issue
+      allow delete: if isAdmin();
+    }
+    
+    // Deny all other access by default - NO CATCH-ALL RULE
+  }
+}
